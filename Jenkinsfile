@@ -8,6 +8,13 @@ node{
       sh "${mvnHome}/bin/mvn clean package"
 	  sh 'mv target/myweb*.war target/newapp.war'
    }
+   stage('SonarQube Analysis') {
+	       
+	 def mvnHome =  tool name: 'maven3', type: 'maven'
+	 withSonarQubeEnv('sonar') { 
+	   sh "${mvnHome}/bin/mvn sonar:sonar"
+	 }
+       }
    stage('Build Docker Imager'){
      
      sh 'docker build -t jishg/myweb .'
@@ -20,9 +27,9 @@ node{
    sh 'docker push jishg/myweb'
    } 
    stage('Nexus Image Push'){
-   sh "docker login -u admin -p admin123 13.233.147.237:8083"
-   sh "docker tag jishg/myweb 13.233.147.237:8083/jishg/myweb"
-   sh 'docker push 13.233.147.237:8083/jishg/myweb'
+   sh "docker login -u admin -p admin123 15.207.89.63:8083"
+   sh "docker tag jishg/myweb 15.207.89.63:8083/jishg/myweb"
+   sh 'docker push 15.207.89.63:8083/jishg/myweb'
    }
      stage('Remove Previous Container'){
 	try{
